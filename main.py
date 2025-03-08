@@ -1,6 +1,4 @@
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 import numpy as np
 import librosa
 import joblib
@@ -8,7 +6,8 @@ import io
 from fastapi import FastAPI, File, UploadFile
 from tensorflow.keras.models import load_model
 
-
+# Force TensorFlow to use CPU (Fixes GPU errors)
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 app = FastAPI()
 
@@ -16,8 +15,12 @@ app = FastAPI()
 MODEL_PATH = "speech_emotion_recognition_model_optimized (1).h5"
 LABEL_ENCODER_PATH = "label_encoder.pkl"
 
-model = load_model(MODEL_PATH)
-encoder = joblib.load(LABEL_ENCODER_PATH)
+try:
+    model = load_model(MODEL_PATH)
+    encoder = joblib.load(LABEL_ENCODER_PATH)
+    model_status = "Model loaded successfully"
+except Exception as e:
+    model_status = f"Model loading failed: {str(e)}"
 
 # Feature extraction function
 def extract_features(audio_data, sr):
@@ -40,6 +43,12 @@ def extract_features(audio_data, sr):
 
     return features.reshape(1, -1, 1)
 
+# ✅ Health Check Route
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy", "model_status": model_status}
+
+# 🎤 Speech Emotion Prediction Route
 @app.post("/predict/")
 async def predict(file: UploadFile = File(...)):
     # Read the uploaded file as bytes
