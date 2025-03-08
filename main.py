@@ -8,7 +8,7 @@ from tensorflow.keras.models import load_model
 app = FastAPI()
 
 # Load the trained model and label encoder
-MODEL_PATH = "speech_emotion_recognition_model_optimized.h5"
+MODEL_PATH = "speech_emotion_recognition_model_optimized (1).h5"
 LABEL_ENCODER_PATH = "label_encoder.pkl"
 
 model = load_model(MODEL_PATH)
