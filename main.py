@@ -9,8 +9,19 @@ from tensorflow.keras.models import load_model
 
 # Force TensorFlow to use CPU (Fixes GPU errors)
 
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+# ✅ Allow CORS for frontend requests
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Replace with ["http://localhost:5173"] for security
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],  # Allow all headers
+)
+
 
 # Load the trained model and label encoder
 MODEL_PATH = "speech_emotion_recognition_model_optimized (1).h5"
