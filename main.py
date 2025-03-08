@@ -4,6 +4,10 @@ import joblib
 import io
 from fastapi import FastAPI, File, UploadFile
 from tensorflow.keras.models import load_model
+import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
+
 
 app = FastAPI()
 

@@ -1,6 +1,7 @@
 fastapi
 uvicorn
+tensorflow
+python-multipart
+h5py
 numpy
 librosa
-tensorflow
-joblib
