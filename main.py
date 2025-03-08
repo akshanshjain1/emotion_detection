@@ -1,4 +1,5 @@
 import os
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 import numpy as np
 import librosa
 import joblib
@@ -7,7 +8,7 @@ from fastapi import FastAPI, File, UploadFile
 from tensorflow.keras.models import load_model
 
 # Force TensorFlow to use CPU (Fixes GPU errors)
-os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
+
 
 app = FastAPI()
 
@@ -66,3 +67,6 @@ async def predict(file: UploadFile = File(...)):
     predicted_emotion = encoder.inverse_transform([predicted_index])[0]
 
     return {"predicted_emotion": predicted_emotion}
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
